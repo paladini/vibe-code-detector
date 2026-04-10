@@ -2,6 +2,7 @@
   "manifest_version": 3,
   "name": "Vibe Code Detector",
   "version": "1.0",
+  "author": "Fernando Paladini (https://github.com/paladini)",
   "description": "Detects if a site was created using AI or Vibe Coding tools.",
   "permissions": ["activeTab", "scripting"],
   "action": {
