@@ -44,10 +44,10 @@ export default function App() {
               <Shield className="w-3 h-3" /> Extension Simulator
             </div>
             <h1 className="text-5xl lg:text-7xl font-black text-white tracking-tight leading-[0.9]">
-              Vibe Code Detector: <span className="text-indigo-500">Does it have a vibe?</span>
+              Vibe Code Detector: <span className="text-indigo-500">Forensic analysis for the AI web.</span>
             </h1>
             <p className="text-slate-400 text-lg max-w-xl leading-relaxed">
-              The definitive radar for detecting <strong>Vibe Coding</strong>. Instantly identify AI DNA from Cursor, Windsurf, Lovable, and v0.
+              The ultimate open-source radar for unmasking <strong>Vibe Coding</strong>. Instantly identify the DNA of Cursor, Windsurf, Lovable, v0, and the entire AI-first ecosystem.
             </p>
           </div>
 

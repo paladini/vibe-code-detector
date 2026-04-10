@@ -1,32 +1,34 @@
-# Vibe Code Detector - Project Guidelines
+# 🕵️‍♂️ Vibe Code Detector - Forensic Guidelines
 
-## Overview
-Vibe Code Detector is an open-source tool designed to identify "Vibe Coding" patterns in modern web applications. It detects heuristics from AI-first development tools like Cursor, v0, Lovable, Bolt.new, and others.
+## Core Mission: "Unmask the AI-Generated Web"
+Vibe Code Detector is a forensic tool for the modern web. We believe in transparency. As "Vibe Coding" becomes the standard for rapid development, we provide the community with the tools to identify the origin of software.
 
-## Core Mission
-"Does this code have a vibe? Yes, because it was AI-generated, and we're seeing it everywhere."
-The goal is to provide transparency about the origin of web software in the age of generative AI.
+## Technical Heuristics & Signatures
 
-## Technical Heuristics
-- **Tailwind Utility Density**: High ratio of utility classes per element.
-- **Shadcn/UI & Radix Patterns**: Specific DOM attributes and class naming conventions.
-- **AI Iconography**: Heavy reliance on Lucide icons and generic 24x24 SVG patterns.
-- **Platform Markers**: Signatures from Google AI Studio, Lovable, v0, Bolt, Replit, etc.
-- **IDE/Agent Signatures**: Internal markers from Cursor (`__cursor`), Windsurf, Trae, and Replit Agents.
+### 1. IDE & Agent Fingerprints (High Confidence)
+- **Cursor**: `__cursor`, `cursor-ignore`, and specific comment blocks.
+- **Windsurf**: Internal markers and specific class naming patterns.
+- **Trae**: ByteDance's AI IDE markers (`trae-ide`).
+- **Replit Agent**: `replit-agent` signatures and `.replit` artifacts.
+- **Devin/Claude Code**: Specific autonomous agent rastro patterns.
 
-## Development Standards
-- **Language**: TypeScript (Strict mode).
-- **Styling**: Tailwind CSS (Utility-first).
-- **Icons**: Lucide React.
-- **Animations**: Framer Motion (Motion).
-- **Extension**: Manifest v3 compliant.
+### 2. Platform Signatures (Direct Markers)
+- **v0.dev**: `v0` generator meta tags and specific Radix/Tailwind combinations.
+- **Lovable.dev**: `lovable-project` markers and GPT-Engineer legacy signatures.
+- **Bolt.new / Stackblitz**: `bolt-` prefixed classes and Stackblitz runtime artifacts.
+- **Google AI Studio**: `metadata.json` references and Apache-2.0 license headers.
 
-## Release Pipeline
-- **Build**: `npm run build` generates the production assets.
-- **Extension Packaging**: The `/extension` directory contains the standalone Manifest v3 files.
-- **GitHub Releases**: Automated tagging and ZIP packaging of the `/extension` folder for distribution.
+### 3. Structural "Vibe" Heuristics
+- **Tailwind Density**: A ratio of >4.5 utility classes per element is a strong indicator of prompt-based styling.
+- **Shadcn/Radix DNA**: Detection of `data-radix-` attributes combined with standard Shadcn color variables (`--background`, `--foreground`).
+- **Lucide Iconography**: The default choice for almost all AI generators.
+- **Placeholder DNA**: Common prompt-default texts like "Feature 1", "Lorem Ipsum", or generic "Bento Grid" layouts.
 
-## Contributing
-- All code and documentation must be in **English**.
-- Focus on adding new heuristics for emerging AI coding agents.
-- Maintain a "Technical & Minimalist" design aesthetic.
+## Contribution Standards
+- **English Only**: All code, comments, and documentation must be in English.
+- **Evidence-Based**: New heuristics must be backed by examples from the target AI tool.
+- **Minimalist Aesthetic**: Maintain the "Forensic/Dark" UI theme.
+
+## Release Strategy
+- **Automated Releases**: GitHub Actions handles packaging and tagging.
+- **Open Source**: The project is MIT licensed to encourage widespread adoption and contribution.

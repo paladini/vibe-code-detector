@@ -39,7 +39,7 @@ function analyzeVibe() {
   factors[3].detected = hasMotion && (factors[2].detected || factors[0].detected);
 
   // 5. IDE Markers
-  const ideMarkers = ['cursor-ignore', '__cursor', 'windsurf', 'trae-ide', 'replit-code-editor', 'devin-ai', 'claude-code'];
+  const ideMarkers = ['cursor-ignore', '__cursor', 'windsurf', 'trae-ide', 'replit-code-editor', 'devin-ai', 'claude-code', 'ai-generated'];
   const hasIDEMarker = ideMarkers.some(m => html.toLowerCase().includes(m));
   factors[4].detected = hasIDEMarker;
 
@@ -47,10 +47,11 @@ function analyzeVibe() {
   const metaGenerator = document.querySelector('meta[name="generator"]')?.getAttribute('content')?.toLowerCase() || '';
   const isAIStudio = html.includes('metadata.json') || html.includes('SPDX-License-Identifier: Apache-2.0');
   const isLovable = html.includes('lovable') || html.includes('gptengineer');
-  const isBolt = html.includes('bolt.new') || html.includes('stackblitz');
+  const isBolt = document.location.hostname.includes('bolt.new') || html.includes('bolt.new') || html.includes('stackblitz');
   const isV0 = html.includes('v0.dev') || metaGenerator.includes('v0');
   const isReplit = html.includes('replit.app') || html.includes('replit-agent');
-  factors[5].detected = isAIStudio || isLovable || isBolt || isV0 || isReplit;
+  const isVercelAI = html.includes('vercel-ai-sdk') || html.includes('ai.vercel.app');
+  factors[5].detected = isAIStudio || isLovable || isBolt || isV0 || isReplit || isVercelAI;
 
   let score = 0;
   factors.forEach(f => { if (f.detected) score += f.weight; });

@@ -1,20 +1,82 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 🕵️‍♂️ Vibe Code Detector
 
-# Run and deploy your AI Studio app
+### *Forensic analysis for the AI-generated web.*
 
-This contains everything you need to run your app locally.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+[![Manifest V3](https://img.shields.io/badge/Chrome-Manifest%20V3-blue.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
 
-View your app in AI Studio: https://ai.studio/apps/a869cc1a-037e-4b0b-9724-7da83276a3d0
+**Vibe Code Detector** is the ultimate open-source browser extension designed to identify "Vibe Coding" patterns. In an era where AI generates entire applications from a single prompt, this tool provides transparency by detecting the unique "DNA" left behind by AI IDEs, agents, and platforms.
 
-## Run Locally
+---
 
-**Prerequisites:**  Node.js
+## 🚀 Why Vibe Code Detector?
 
+"Does this code have a vibe?" — If you've asked yourself this while browsing a modern web app, you're not alone. AI-first development tools like **Cursor**, **v0**, and **Lovable** have a distinct signature. We help you unmask it.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### 🔍 What we detect:
+- **AI IDEs & Agents**: Signatures from `Cursor`, `Windsurf`, `Trae`, `Replit Agent`, `Devin`, and `Claude Code`.
+- **Generation Platforms**: Markers from `v0.dev`, `Lovable.dev`, `Bolt.new`, `Stackblitz`, and `Google AI Studio`.
+- **The "Vibe" Stack**: High-density Tailwind CSS, Shadcn/UI patterns, Radix primitives, and Lucide iconography.
+- **Heuristic Forensics**: Analysis of utility class density, SVG export patterns, and common AI placeholder text.
+
+---
+
+## 🛠 How it Works
+
+The detector runs a multi-layered heuristic scan on the active tab:
+
+1. **Utility Density**: Calculates the ratio of Tailwind classes per DOM element.
+2. **Component Fingerprinting**: Identifies specific Radix/Shadcn attribute patterns.
+3. **IDE Signatures**: Scans for internal markers like `__cursor` or specific AI-generated comments.
+4. **Platform Metadata**: Checks for generator tags and specific deployment signatures.
+
+---
+
+## 📦 Installation
+
+### For Users
+1. Download the latest release from the [Releases](https://github.com/your-repo/vibe-code-detector/releases) page.
+2. Unzip the file.
+3. Open Chrome and go to `chrome://extensions/`.
+4. Enable **Developer Mode**.
+5. Click **Load unpacked** and select the unzipped folder.
+
+### For Developers
+```bash
+# Clone the repo
+git clone https://github.com/your-repo/vibe-code-detector.git
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+---
+
+## 🤝 Contributing
+
+We want this to be the **gold standard** for AI detection. New AI tools are popping up every week, and we need your help to keep our heuristics up to date!
+
+1. **Add new Heuristics**: Found a new AI tool? Open a PR with its signature.
+2. **Refine Scoring**: Help us balance the weights for better accuracy.
+3. **UI/UX**: Improve the extension's "forensic" aesthetic.
+
+Check out [CONTRIBUTING.md](./CONTRIBUTING.md) (coming soon) or just open a PR!
+
+---
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+<p align="center">
+  Built for the transparent web. 🌐
+</p>
