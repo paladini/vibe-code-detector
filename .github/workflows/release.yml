@@ -1,0 +1,40 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Build Applet
+        run: npm run build
+        
+      - name: Package Extension
+        run: |
+          mkdir -p dist-extension
+          cp -r extension/* dist-extension/
+          # If popup needs to be bundled from React build:
+          # cp dist/index.html dist-extension/popup.html
+          # cp dist/assets/* dist-extension/assets/
+          zip -r vibe-code-detector.zip dist-extension
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: vibe-code-detector.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -17,37 +17,37 @@ export function analyzeVibe(doc: Document): VibeResult {
   const factors = [
     {
       name: "Tailwind & Utility DNA",
-      description: "Padrões de classes utilitárias típicos de v0, Lovable e Bolt.",
+      description: "Massive utility class patterns typical of v0, Lovable, and Bolt.",
       weight: 15,
       detected: false,
     },
     {
       name: "Shadcn/UI & Radix",
-      description: "Estruturas de componentes Radix e classes padrão Shadcn.",
+      description: "Radix component structures and standard Shadcn classes.",
       weight: 15,
       detected: false,
     },
     {
       name: "AI Iconography (Lucide)",
-      description: "Uso massivo de Lucide Icons, o padrão ouro das IAs.",
+      description: "Heavy use of Lucide Icons, the AI industry standard.",
       weight: 10,
       detected: false,
     },
     {
       name: "Vibe Coding Stack",
-      description: "Uso conjunto de Framer Motion, Lucide e Tailwind.",
+      description: "Combined use of Framer Motion, Lucide, and Tailwind.",
       weight: 15,
       detected: false,
     },
     {
       name: "AI IDE & Agent Markers",
-      description: "Assinaturas de Cursor, Windsurf, Trae, Replit ou Devin.",
+      description: "Signatures from Cursor, Windsurf, Trae, Replit, or Devin.",
       weight: 25,
       detected: false,
     },
     {
       name: "Platform Signatures",
-      description: "Marcas de Google AI Studio, Lovable, v0 ou Bolt.new.",
+      description: "Markers from Google AI Studio, Lovable, v0, or Bolt.new.",
       weight: 20,
       detected: false,
     },

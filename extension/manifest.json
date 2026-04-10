@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "VibeCheck: AI Site Detector",
+  "name": "Vibe Code Detector",
   "version": "1.0",
-  "description": "Detecta se um site foi criado por IA ou ferramentas de Vibe Coding.",
+  "description": "Detects if a site was created using AI or Vibe Coding tools.",
   "permissions": ["activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",

@@ -44,10 +44,10 @@ export default function App() {
               <Shield className="w-3 h-3" /> Extension Simulator
             </div>
             <h1 className="text-5xl lg:text-7xl font-black text-white tracking-tight leading-[0.9]">
-              Vibe Check: <span className="text-indigo-500">O Código tem Vibe?</span>
+              Vibe Code Detector: <span className="text-indigo-500">Does it have a vibe?</span>
             </h1>
             <p className="text-slate-400 text-lg max-w-xl leading-relaxed">
-              O radar definitivo para detectar <strong>Vibe Coding</strong>. Identifique instantaneamente o DNA de IA do Cursor, Windsurf, Lovable e v0.
+              The definitive radar for detecting <strong>Vibe Coding</strong>. Instantly identify AI DNA from Cursor, Windsurf, Lovable, and v0.
             </p>
           </div>
 
@@ -56,15 +56,15 @@ export default function App() {
               <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
                 <Globe className="w-4 h-4" />
               </div>
-              <h3 className="text-white font-bold text-sm">Análise em Tempo Real</h3>
-              <p className="text-slate-500 text-xs">Escaneia o DOM e CSS da página ativa instantaneamente.</p>
+              <h3 className="text-white font-bold text-sm">Real-time Analysis</h3>
+              <p className="text-slate-500 text-xs">Instantly scans the DOM and CSS of the active page.</p>
             </div>
             <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800 space-y-2">
               <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400">
                 <Search className="w-4 h-4" />
               </div>
-              <h3 className="text-white font-bold text-sm">Heurísticas Avançadas</h3>
-              <p className="text-slate-500 text-xs">Identifica Tailwind, Shadcn, Lucide e padrões de prompt.</p>
+              <h3 className="text-white font-bold text-sm">Advanced Heuristics</h3>
+              <p className="text-slate-500 text-xs">Identifies Tailwind, Shadcn, Lucide, and prompt patterns.</p>
             </div>
           </div>
         </div>
@@ -155,7 +155,7 @@ export default function App() {
 
           {/* Floating Label */}
           <div className="absolute -bottom-4 -right-4 bg-indigo-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border border-indigo-400/30 z-30">
-            SIMULADOR ATIVO
+            SIMULATOR ACTIVE
           </div>
         </div>
       </div>

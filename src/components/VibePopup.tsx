@@ -11,6 +11,7 @@ import {
   Type, 
   Code2, 
   Sparkles,
+  Search,
   ExternalLink,
   Github,
   RefreshCw
@@ -47,8 +48,8 @@ export default function VibePopup() {
   };
 
   const getScoreLabel = (score: number) => {
-    if (score < 30) return "Humano / Artesanal";
-    if (score < 70) return "Híbrido / Assistido";
+    if (score < 30) return "Human / Handcrafted";
+    if (score < 70) return "Hybrid / Assisted";
     return "Vibe Coded / AI-First";
   };
 
@@ -67,8 +68,8 @@ export default function VibePopup() {
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-sm font-bold tracking-tight">VibeCheck</h1>
-            <p className="text-[10px] text-slate-400 font-mono uppercase tracking-widest">AI Detector v1.0</p>
+            <h1 className="text-sm font-bold tracking-tight">Vibe Code Detector</h1>
+            <p className="text-[10px] text-slate-400 font-mono uppercase tracking-widest">AI Radar v1.0</p>
           </div>
         </div>
         <Button 
@@ -101,7 +102,7 @@ export default function VibePopup() {
                       <Zap className="w-8 h-8 text-indigo-500 animate-pulse" />
                     </div>
                   </div>
-                  <p className="text-sm font-medium text-slate-400 animate-pulse">Analisando heurísticas...</p>
+                  <p className="text-sm font-medium text-slate-400 animate-pulse">Analyzing heuristics...</p>
                 </motion.div>
               ) : result && (
                 <motion.div 
@@ -119,7 +120,7 @@ export default function VibePopup() {
                     {getScoreLabel(result.score)}
                   </Badge>
                   <p className="text-xs text-slate-400 mt-2 max-w-[250px]">
-                    Probabilidade deste site ter sido gerado ou fortemente assistido por IA.
+                    Probability of this site being AI-generated or heavily assisted.
                   </p>
                 </motion.div>
               )}
@@ -129,7 +130,7 @@ export default function VibePopup() {
           {/* Factors Section */}
           <div className="space-y-3">
             <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-              <Code2 className="w-3 h-3" /> Fatores Detectados
+              <Code2 className="w-3 h-3" /> Detected Factors
             </h3>
             
             <div className="grid gap-2">
@@ -172,7 +173,7 @@ export default function VibePopup() {
             <div className="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
               <Info className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
               <p className="text-[10px] text-slate-400 leading-normal">
-                O "Vibe Coding" refere-se ao estilo de desenvolvimento onde a IA gera a maior parte do código visual e estrutural, resultando em padrões de design modernos e altamente padronizados.
+                "Vibe Coding" refers to a development style where AI generates most of the visual and structural code, resulting in highly standardized modern design patterns.
               </p>
             </div>
           </div>
