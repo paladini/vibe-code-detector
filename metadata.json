@@ -1,0 +1,5 @@
+{
+  "name": "VibeCheck: AI Site Detector",
+  "description": "Detecta se um site foi criado por IA ou ferramentas de Vibe Coding (Cursor, v0, Claude) analisando padrões de design e código.",
+  "requestFramePermissions": []
+}
