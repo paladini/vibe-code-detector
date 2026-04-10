@@ -71,6 +71,13 @@ Check out [CONTRIBUTING.md](./CONTRIBUTING.md) (coming soon) or just open a PR!
 
 ---
 
+## 👤 Author
+
+**Fernando Paladini**
+- GitHub: [@paladini](https://github.com/paladini)
+
+---
+
 ## 📜 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
