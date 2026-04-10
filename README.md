@@ -36,7 +36,7 @@ The detector runs a multi-layered heuristic scan on the active tab:
 ## 📦 Installation
 
 ### For Users
-1. Download the latest release from the [Releases](https://github.com/your-repo/vibe-code-detector/releases) page.
+1. Download the latest release from the [Releases](https://github.com/paladini/vibe-code-detector/releases) page.
 2. Unzip the file.
 3. Open Chrome and go to `chrome://extensions/`.
 4. Enable **Developer Mode**.
@@ -45,7 +45,7 @@ The detector runs a multi-layered heuristic scan on the active tab:
 ### For Developers
 ```bash
 # Clone the repo
-git clone https://github.com/your-repo/vibe-code-detector.git
+git clone https://github.com/paladini/vibe-code-detector.git
 
 # Install dependencies
 npm install
@@ -67,7 +67,7 @@ We want this to be the **gold standard** for AI detection. New AI tools are popp
 2. **Refine Scoring**: Help us balance the weights for better accuracy.
 3. **UI/UX**: Improve the extension's "forensic" aesthetic.
 
-Check out [CONTRIBUTING.md](./CONTRIBUTING.md) (coming soon) or just open a PR!
+Check out [CONTRIBUTING.md](./CONTRIBUTING.md) or just open a PR!
 
 ---
 
