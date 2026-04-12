@@ -16,7 +16,6 @@ import {
   Package,
   GitCommit,
   LayoutGrid,
-  Languages,
   CheckSquare,
   ExternalLink,
   Settings2,
@@ -151,7 +150,6 @@ export default function VibePopup() {
       'AI SDK/Dependency Clues':   <Package className={cls} />,
       'Commit/PR Metadata':        <GitCommit className={cls} />,
       'Default AI UI Patterns':    <LayoutGrid className={cls} />,
-      'English-Only Comments':     <Languages className={cls} />,
       'Consistent Formatting':     <CheckSquare className={cls} />,
       'External AI References':    <ExternalLink className={cls} />,
       'Build/CI AI Artifacts':     <Settings2 className={cls} />,
@@ -187,7 +185,6 @@ export default function VibePopup() {
           </div>
           <div>
             <h1 className="text-sm font-bold tracking-tight">Vibe Code Detector</h1>
-            <p className="text-[10px] text-slate-400 font-mono uppercase tracking-widest">AI Radar v1.0</p>
           </div>
         </div>
         <Button
@@ -238,9 +235,19 @@ export default function VibePopup() {
 
           {/* Factors */}
           <div className="space-y-3">
-            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-              <Code2 className="w-3 h-3" /> Detected Factors
-            </h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                <Code2 className="w-3 h-3" /> Detected Factors
+              </h3>
+              {result && (
+                <span className="text-xs font-bold tabular-nums text-slate-400">
+                  <span className={result.factors.filter((f) => f.detected).length > 0 ? 'text-indigo-400' : ''}>
+                    {result.factors.filter((f) => f.detected).length}
+                  </span>
+                  <span className="text-slate-600"> / {result.factors.length}</span>
+                </span>
+              )}
+            </div>
 
             {error && (
               <div className="rounded-lg border border-rose-500/40 bg-rose-500/10 p-3 text-xs text-rose-200">
@@ -258,20 +265,24 @@ export default function VibePopup() {
                     transition={{ delay: idx * 0.04 }}
                     className={`p-3 rounded-lg border transition-colors ${
                       factor.detected
-                        ? 'bg-indigo-500/10 border-indigo-500/30'
-                        : 'bg-slate-900/50 border-slate-800 opacity-50'
+                        ? 'bg-indigo-500/15 border-indigo-500/50'
+                        : 'bg-slate-950 border-slate-800/50 opacity-30'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
                       <div className="flex items-center gap-2">
                         {factorIcon(factor.name)}
-                        <span className="text-xs font-bold">{factor.name}</span>
+                        <span className={`text-xs font-bold ${factor.detected ? 'text-indigo-200' : 'text-slate-500'}`}>
+                          {factor.name}
+                        </span>
                       </div>
                       {factor.detected && (
                         <Badge className="bg-indigo-500 text-[9px] h-4 px-1.5">+{factor.weight}%</Badge>
                       )}
                     </div>
-                    <p className="text-[10px] text-slate-400 leading-relaxed">{factor.description}</p>
+                    <p className={`text-[10px] leading-relaxed ${factor.detected ? 'text-slate-300' : 'text-slate-600'}`}>
+                      {factor.description}
+                    </p>
                   </motion.div>
                 ))}
               </div>

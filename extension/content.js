@@ -25,7 +25,6 @@ const FACTORS = [
   { name: 'AI SDK/Dependency Clues',   description: 'Presence of AI SDKs or dependencies (e.g., openai, langchain, gpt-engineer).', weight: 6 },
   { name: 'Commit/PR Metadata',        description: 'Commit messages or PR descriptions referencing AI tools or prompt-based workflows.', weight: 5 },
   { name: 'Default AI UI Patterns',    description: 'Default layouts or icon sets popular with AI tools (e.g., Bento Grid, Tabler Icons).', weight: 5 },
-  { name: 'English-Only Comments',     description: 'All comments and docs in English, even in non-English projects.',           weight: 4 },
   { name: 'Consistent Formatting',     description: 'Overly consistent code style, as if formatted by a tool across the entire codebase.', weight: 4 },
   { name: 'External AI References',    description: 'Links or references to AI docs, OpenAI, Anthropic, v0.dev, etc., in code or docs.', weight: 6 },
   { name: 'Build/CI AI Artifacts',     description: 'Workflow files referencing AI build steps or model deployments.',           weight: 5 },
@@ -109,18 +108,15 @@ function analyzeVibe() {
   // 12. Default AI UI patterns — Tabler icons, Bento layouts
   factors[11].detected = html.includes('tabler-icon') || html.includes('bento') || html.includes('heroicon');
 
-  // 13. English-only comments — can't be meaningfully detected from DOM, always false
+  // 13. Consistent formatting — can't be reliably detected from DOM, always false
   factors[12].detected = false;
 
-  // 14. Consistent formatting — can't be reliably detected from DOM, always false
-  factors[13].detected = false;
-
-  // 15. External AI references
+  // 14. External AI references
   const externalAIRefs = ['openai.com', 'anthropic.com', 'v0.dev', 'claude.ai', 'chat.openai.com'];
-  factors[14].detected = externalAIRefs.some((m) => html.includes(m));
+  factors[13].detected = externalAIRefs.some((m) => html.includes(m));
 
-  // 16. Build/CI AI artifacts — can't be detected from DOM, always false
-  factors[15].detected = false;
+  // 15. Build/CI AI artifacts — can't be detected from DOM, always false
+  factors[14].detected = false;
 
   // Score
   let totalScore = factors.reduce((sum, f) => sum + (f.detected ? f.weight : 0), 0);
