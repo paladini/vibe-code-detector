@@ -53,9 +53,29 @@ npm install
 # Run development server
 npm run dev
 
-# Build for production
+
+# Build for production (Chrome Extension)
 npm run build
 ```
+
+---
+
+## 🏗️ Building & Publishing the Chrome Extension
+
+1. **Build the extension:**
+   - Run `npm run build`. This generates all final files (popup.html, popup.js, assets, etc.) inside the `extension/` folder.
+
+2. **Load the extension in Chrome:**
+   - Open `chrome://extensions/`.
+   - Enable **Developer Mode**.
+   - Click **Load unpacked** and select the `extension/` folder.
+
+3. **Update after code changes:**
+   - Run `npm run build` again and reload the extension in Chrome.
+
+> **Note:**
+> - Do not manually edit generated files inside `extension/` (such as popup.html or popup.js). They are overwritten on every build.
+> - The React app, styles, and logic are bundled automatically by Vite.
 
 ---
 

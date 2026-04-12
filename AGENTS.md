@@ -10,7 +10,7 @@ Vibe Code Detector is a forensic tool for the modern web. We believe in transpar
 - **Windsurf**: Internal markers and specific class naming patterns.
 - **Trae**: ByteDance's AI IDE markers (`trae-ide`).
 - **Replit Agent**: `replit-agent` signatures and `.replit` artifacts.
-- **Devin/Claude Code**: Specific autonomous agent rastro patterns.
+- **Devin/Claude Code**: Specific autonomous agent trace patterns.
 
 ### 2. Platform Signatures (Direct Markers)
 - **v0.dev**: `v0` generator meta tags and specific Radix/Tailwind combinations.
@@ -25,9 +25,14 @@ Vibe Code Detector is a forensic tool for the modern web. We believe in transpar
 - **Placeholder DNA**: Common prompt-default texts like "Feature 1", "Lorem Ipsum", or generic "Bento Grid" layouts.
 
 ## Contribution Standards
-- **English Only**: All code, comments, and documentation must be in English.
+- **English Only**: All code, code comments, documentation, commit messages, and pull request descriptions must be written in English. No exceptions.
 - **Evidence-Based**: New heuristics must be backed by examples from the target AI tool.
 - **Minimalist Aesthetic**: Maintain the "Forensic/Dark" UI theme.
+
+## Heuristics Architecture
+- `src/lib/vibe-detector.ts` is the **single source of truth** for all factor definitions (`VIBE_FACTORS`) and detection logic (`analyzeVibe`).
+- `extension/content.js` mirrors the same logic in plain JavaScript (no imports), because content scripts cannot use ES modules. **Always update both files together.**
+- `src/components/VibePopup.tsx` must **not** duplicate heuristic logic. The `analyzeByScriptInjection` fallback re-injects `content.js` as a file and retries the message — it does not inline any detection code.
 
 ## Release Strategy
 - **Automated Releases**: GitHub Actions handles packaging and tagging.

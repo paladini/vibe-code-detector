@@ -22,7 +22,7 @@ First off, thank you for considering contributing to Vibe Code Detector! It's pe
 
 ## Technical Guidelines
 - **Language**: All code and documentation must be in **English**.
-- **Heuristics**: New heuristics should be added to `src/lib/vibe-detector.ts` (for the simulator) and `extension/content.js` (for the extension).
+- **Heuristics**: `src/lib/vibe-detector.ts` is the single source of truth for all factor definitions and detection logic. `extension/content.js` mirrors that logic (without imports) and must be kept in sync. Always update both files together.
 - **UI**: Maintain the "Forensic/Dark" aesthetic using Tailwind CSS.
 
 ## Style Guide
