@@ -4,37 +4,83 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (example: v1.2.3)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          
+
       - name: Install dependencies
-        run: npm install
-        
-      - name: Build Applet
+        run: npm ci
+
+      - name: Build extension
         run: npm run build
-        
-      - name: Package Extension
+
+      - name: Resolve release metadata
+        id: meta
+        shell: bash
         run: |
-          mkdir -p dist-extension
-          cp -r extension/* dist-extension/
-          # If popup needs to be bundled from React build:
-          # cp dist/index.html dist-extension/popup.html
-          # cp dist/assets/* dist-extension/assets/
-          zip -r vibe-code-detector.zip dist-extension
-          
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            TAG="${GITHUB_REF_NAME}"
+          else
+            TAG="${{ inputs.version }}"
+          fi
+
+          if [[ ! "$TAG" =~ ^v ]]; then
+            TAG="v${TAG}"
+          fi
+
+          VERSION="${TAG#v}"
+          ARCHIVE="vibe-code-detector-${VERSION}.zip"
+          CHECKSUM_FILE="${ARCHIVE}.sha256"
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "archive=$ARCHIVE" >> "$GITHUB_OUTPUT"
+          echo "checksum_file=$CHECKSUM_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Package Extension
+        shell: bash
+        run: |
+          mkdir -p release/extension
+          cp -r extension/* release/extension/
+          (
+            cd release/extension
+            zip -r "../${{ steps.meta.outputs.archive }}" .
+          )
+
+      - name: Generate checksum
+        shell: bash
+        run: |
+          cd release
+          sha256sum "${{ steps.meta.outputs.archive }}" > "${{ steps.meta.outputs.checksum_file }}"
+
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
-          files: vibe-code-detector.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: Vibe Code Detector ${{ steps.meta.outputs.version }}
+          generate_release_notes: true
+          files: |
+            release/${{ steps.meta.outputs.archive }}
+            release/${{ steps.meta.outputs.checksum_file }}

@@ -62,6 +62,29 @@ npm run build
 
 ## 🏗️ Building & Publishing the Chrome Extension
 
+### Automated (GitHub Actions)
+
+- **CI build on every push/PR to main**:
+   - Workflow: `.github/workflows/lint.yml`
+   - Runs lint, formatting check, typecheck, and `npm run build` automatically.
+
+- **Automated GitHub Release with packaged extension**:
+   - Workflow: `.github/workflows/release.yml`
+   - Triggers automatically when you push a tag like `v1.2.3`.
+   - Also supports manual trigger via **Actions > Release Extension > Run workflow**.
+   - Publishes a release with:
+      - `vibe-code-detector-<version>.zip`
+      - `vibe-code-detector-<version>.zip.sha256`
+
+**Release by tag (recommended):**
+
+```bash
+git tag v1.0.1
+git push origin v1.0.1
+```
+
+The release is created automatically with generated release notes.
+
 1. **Build the extension:**
    - Run `npm run build`. This generates all final files (popup.html, popup.js, assets, etc.) inside the `extension/` folder.
 
