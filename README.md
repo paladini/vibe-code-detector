@@ -1,132 +1,106 @@
-# 🕵️‍♂️ Vibe Code Detector
+<p align="center">
+  <img src="media/Marquee_Tile_(1400x560).png" alt="Vibe Code Detector" width="100%">
+</p>
 
-### *Forensic analysis for the AI-generated web.*
+<br>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-[![Manifest V3](https://img.shields.io/badge/Chrome-Manifest%20V3-blue.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
-
-**Vibe Code Detector** is the ultimate open-source browser extension designed to identify "Vibe Coding" patterns. In an era where AI generates entire applications from a single prompt, this tool provides transparency by detecting the unique "DNA" left behind by AI IDEs, agents, and platforms.
-
----
-
-## 🚀 Why Vibe Code Detector?
-
-"Does this code have a vibe?" — If you've asked yourself this while browsing a modern web app, you're not alone. AI-first development tools like **Cursor**, **v0**, and **Lovable** have a distinct signature. We help you unmask it.
-
-### 🔍 What we detect:
-- **AI IDEs & Agents**: Signatures from `Cursor`, `Windsurf`, `Trae`, `Replit Agent`, `Devin`, and `Claude Code`.
-- **Generation Platforms**: Markers from `v0.dev`, `Lovable.dev`, `Bolt.new`, `Stackblitz`, and `Google AI Studio`.
-- **The "Vibe" Stack**: High-density Tailwind CSS, Shadcn/UI patterns, Radix primitives, and Lucide iconography.
-- **Heuristic Forensics**: Analysis of utility class density, SVG export patterns, and common AI placeholder text.
+<p align="center">
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="https://github.com/paladini/vibe-code-detector/releases"><img src="https://img.shields.io/github/v/release/paladini/vibe-code-detector?color=blue" alt="Latest Release"></a>
+  <a href="https://developer.chrome.com/docs/extensions/mv3/intro/"><img src="https://img.shields.io/badge/Chrome-Manifest%20V3-4285F4?logo=googlechrome&logoColor=white" alt="Manifest V3"></a>
+  <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+</p>
 
 ---
 
-## 🛠 How it Works
+**Vibe Code Detector** is an open-source browser extension that performs forensic analysis on any webpage to detect the AI tools, IDEs, and platforms used to build it. In the age of "Vibe Coding", every AI tool leaves a unique signature — this extension reads it.
 
-The detector runs a multi-layered heuristic scan on the active tab:
+## What it detects
 
-1. **Utility Density**: Calculates the ratio of Tailwind classes per DOM element.
-2. **Component Fingerprinting**: Identifies specific Radix/Shadcn attribute patterns.
-3. **IDE Signatures**: Scans for internal markers like `__cursor` or specific AI-generated comments.
-4. **Platform Metadata**: Checks for generator tags and specific deployment signatures.
+### AI IDEs & Agents
+Signatures from **Cursor**, **Windsurf**, **Trae**, **Replit Agent**, **Devin**, and **Claude Code**.
 
----
+### Generation Platforms
+Markers from **v0.dev**, **Lovable.dev**, **Bolt.new**, **Stackblitz**, and **Google AI Studio**.
 
-## 📦 Installation
+### Structural Heuristics
+- **Tailwind Density** — high utility class ratio per element is a strong prompt-based styling indicator
+- **Shadcn/Radix DNA** — `data-radix-*` attributes combined with standard Shadcn CSS variables
+- **Lucide Iconography** — the default icon library for almost every AI code generator
+- **Placeholder Patterns** — generic texts and layouts left behind by AI prompts
 
-### For Users
-1. Download the latest release from the [Releases](https://github.com/paladini/vibe-code-detector/releases) page.
+## Installation
+
+### For users (recommended)
+
+1. Download the latest `.zip` from the [Releases](https://github.com/paladini/vibe-code-detector/releases) page.
 2. Unzip the file.
-3. Open Chrome and go to `chrome://extensions/`.
-4. Enable **Developer Mode**.
-5. Click **Load unpacked** and select the unzipped folder.
+3. In Chrome, go to `chrome://extensions/` and enable **Developer Mode**.
+4. Click **Load unpacked** and select the unzipped folder.
 
-### For Developers
+### From source
+
 ```bash
-# Clone the repo
 git clone https://github.com/paladini/vibe-code-detector.git
-
-# Install dependencies
+cd vibe-code-detector
 npm install
-
-# Run development server
-npm run dev
-
-
-# Build for production (Chrome Extension)
 npm run build
 ```
 
----
+Then load the `extension/` folder in Chrome as described above.
 
-## 🏗️ Building & Publishing the Chrome Extension
+## How it works
 
-### Automated (GitHub Actions)
+The detector runs a multi-layer heuristic scan on the active tab:
 
-- **CI build on every push/PR to main**:
-   - Workflow: `.github/workflows/lint.yml`
-   - Runs lint, formatting check, typecheck, and `npm run build` automatically.
+1. **Utility Density** — calculates the ratio of Tailwind classes per DOM element
+2. **Component Fingerprinting** — identifies specific Radix/Shadcn attribute patterns
+3. **IDE Signatures** — scans for internal markers like `__cursor` or AI-generated comment blocks
+4. **Platform Metadata** — checks for generator tags and deployment-specific signatures
 
-- **Automated GitHub Release with packaged extension**:
-   - Workflow: `.github/workflows/release.yml`
-   - Triggers automatically when you push a tag like `v1.2.3`.
-   - Also supports manual trigger via **Actions > Release Extension > Run workflow**.
-   - Publishes a release with:
-      - `vibe-code-detector-<version>.zip`
-      - `vibe-code-detector-<version>.zip.sha256`
+The final score is a weighted sum across all heuristics, producing a confidence verdict: **Human**, **Likely AI**, or **Almost Certainly AI**.
 
-**Release by tag (recommended):**
+## Architecture
+
+| File | Purpose |
+|------|---------|
+| `src/lib/vibe-detector.ts` | Single source of truth for all heuristics and scoring logic |
+| `extension/content.js` | Plain-JS mirror of the detection logic (no ES module imports) |
+| `src/components/VibePopup.tsx` | Extension popup UI — contains no inline heuristic logic |
+
+> `extension/content.js` must always be kept in sync with `src/lib/vibe-detector.ts`.
+
+## Development
+
+```bash
+npm run dev      # Start Vite dev server (App preview)
+npm run build    # Build the Chrome extension into extension/
+npm run lint     # Run ESLint
+```
+
+CI runs on every push via GitHub Actions. Releases are created automatically when a version tag (`v*.*.*`) is pushed:
 
 ```bash
 git tag v1.0.1
 git push origin v1.0.1
 ```
 
-The release is created automatically with generated release notes.
+## Contributing
 
-1. **Build the extension:**
-   - Run `npm run build`. This generates all final files (popup.html, popup.js, assets, etc.) inside the `extension/` folder.
+New AI tools appear every week. Contributions to keep heuristics current are very welcome:
 
-2. **Load the extension in Chrome:**
-   - Open `chrome://extensions/`.
-   - Enable **Developer Mode**.
-   - Click **Load unpacked** and select the `extension/` folder.
+- **New heuristics** — found a new tool's signature? Open a PR with examples.
+- **Scoring refinements** — help balance weights for better accuracy.
+- **UI improvements** — enhance the forensic aesthetic.
 
-3. **Update after code changes:**
-   - Run `npm run build` again and reload the extension in Chrome.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for full guidelines.
 
-> **Note:**
-> - Do not manually edit generated files inside `extension/` (such as popup.html or popup.js). They are overwritten on every build.
-> - The React app, styles, and logic are bundled automatically by Vite.
+## License
 
----
-
-## 🤝 Contributing
-
-We want this to be the **gold standard** for AI detection. New AI tools are popping up every week, and we need your help to keep our heuristics up to date!
-
-1. **Add new Heuristics**: Found a new AI tool? Open a PR with its signature.
-2. **Refine Scoring**: Help us balance the weights for better accuracy.
-3. **UI/UX**: Improve the extension's "forensic" aesthetic.
-
-Check out [CONTRIBUTING.md](./CONTRIBUTING.md) or just open a PR!
-
----
-
-## 👤 Author
-
-**Fernando Paladini**
-- GitHub: [@paladini](https://github.com/paladini)
-
----
-
-## 📜 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the [MIT License](./LICENSE).
 
 ---
 
 <p align="center">
-  Built for the transparent web. 🌐
+  Built by <a href="https://github.com/paladini">Fernando Paladini</a> · For a more transparent web.
 </p>
