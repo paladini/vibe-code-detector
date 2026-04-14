@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibe Code Detector — Unmask the AI-Generated Web</title>
+  <meta name="description" content="A forensic browser extension that detects which AI tools, IDEs, and platforms were used to build any website." />
+  <meta property="og:title" content="Vibe Code Detector" />
+  <meta property="og:description" content="Unmask the AI-Generated Web. Detect Cursor, v0, Lovable, Bolt, and more — right from your browser." />
+  <meta property="og:image" content="https://raw.githubusercontent.com/paladini/vibe-code-detector/main/media/Marquee_Tile_(1400x560).png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-base:      #080b10;
+      --bg-surface:   #0d1117;
+      --bg-elevated:  #161b22;
+      --bg-card:      #1a2030;
+      --border:       rgba(255,255,255,.07);
+      --border-glow:  rgba(0,212,128,.25);
+      --accent:       #00d480;
+      --accent-dim:   #00a862;
+      --accent-glow:  rgba(0,212,128,.12);
+      --cyan:         #38bdf8;
+      --purple:       #a78bfa;
+      --orange:       #fb923c;
+      --red:          #f87171;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted:   #484f58;
+      --radius:       12px;
+      --radius-lg:    18px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    /* ── Layout helpers ── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(8,11,16,.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -.2px;
+    }
+    .nav-logo-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--accent), var(--cyan));
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: color .15s, background .15s;
+    }
+    .nav-links a:hover { color: var(--text-primary); background: var(--bg-elevated); }
+    .nav-cta {
+      background: var(--accent) !important;
+      color: #000 !important;
+      font-weight: 600 !important;
+    }
+    .nav-cta:hover { background: #00f594 !important; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 140px 0 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(ellipse at center, rgba(0,212,128,.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-glow);
+      border: 1px solid var(--border-glow);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 28px;
+    }
+    .hero-badge span { animation: pulse-dot 2s infinite; }
+    @keyframes pulse-dot {
+      0%,100% { opacity:1; } 50% { opacity:.3; }
+    }
+    h1 {
+      font-size: clamp(36px, 6vw, 68px);
+      font-weight: 700;
+      letter-spacing: -2px;
+      line-height: 1.08;
+      margin-bottom: 24px;
+    }
+    h1 .accent { color: var(--accent); }
+    h1 .dim { color: var(--text-secondary); }
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 19px);
+      color: var(--text-secondary);
+      max-width: 580px;
+      margin: 0 auto 44px;
+      line-height: 1.65;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 56px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      font-size: 14.5px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform .15s, box-shadow .15s, background .15s;
+      cursor: pointer;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 0 0 rgba(0,212,128,0);
+    }
+    .btn-primary:hover {
+      background: #00f594;
+      box-shadow: 0 8px 28px rgba(0,212,128,.35);
+    }
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--bg-card); border-color: rgba(255,255,255,.14); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { color: var(--text-primary); background: var(--bg-elevated); }
+
+    .hero-screenshot {
+      max-width: 800px;
+      margin: 0 auto;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 40px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(0,212,128,.05);
+    }
+    .hero-screenshot img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ── STATS ── */
+    .stats {
+      padding: 56px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 24px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 80px 0; }
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    h2 {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin-bottom: 52px;
+      line-height: 1.7;
+    }
+
+    /* ── DETECTION TARGETS ── */
+    .targets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .target-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      transition: border-color .2s, background .2s, transform .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .target-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .target-card:hover { border-color: rgba(255,255,255,.13); transform: translateY(-2px); }
+    .target-card:hover::before { opacity: 1; }
+    .target-card.green::before  { background: linear-gradient(90deg, var(--accent), transparent); }
+    .target-card.cyan::before   { background: linear-gradient(90deg, var(--cyan), transparent); }
+    .target-card.purple::before { background: linear-gradient(90deg, var(--purple), transparent); }
+    .target-card.orange::before { background: linear-gradient(90deg, var(--orange), transparent); }
+
+    .target-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+    .target-icon.green  { background: rgba(0,212,128,.12); }
+    .target-icon.cyan   { background: rgba(56,189,248,.12); }
+    .target-icon.purple { background: rgba(167,139,250,.12); }
+    .target-icon.orange { background: rgba(251,146,60,.12); }
+
+    .target-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .target-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 2px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      background: var(--bg-elevated);
+    }
+
+    /* ── HOW IT WORKS ── */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      max-width: 680px;
+    }
+    .steps::before {
+      content: '';
+      position: absolute;
+      left: 19px; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--accent-glow), var(--border), transparent);
+    }
+    .step {
+      display: flex;
+      gap: 24px;
+      padding: 0 0 40px;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      position: relative;
+      z-index: 1;
+    }
+    .step-content { padding-top: 4px; }
+    .step-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .step-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* ── SCORE DEMO ── */
+    .score-demo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 720px) {
+      .score-demo { grid-template-columns: 1fr; }
+    }
+    .score-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+    }
+    .score-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: .5px;
+      margin-bottom: 20px;
+    }
+    .score-circle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .score-circle {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      border: 3px solid;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .score-circle.high { border-color: var(--red); color: var(--red); }
+    .score-circle.med  { border-color: var(--orange); color: var(--orange); }
+    .score-verdict-text h4 { font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+    .score-verdict-text p  { font-size: 13px; color: var(--text-secondary); }
+    .factor-bar { margin-bottom: 10px; }
+    .factor-bar-header {
+      display: flex; 
+      justify-content: space-between;
+      font-size: 12.5px;
+      margin-bottom: 4px;
+      color: var(--text-secondary);
+    }
+    .factor-bar-track {
+      height: 5px;
+      background: var(--bg-elevated);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .factor-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+    }
+
+    /* ── INSTALL ── */
+    .install-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 640px) {
+      .install-grid { grid-template-columns: 1fr; }
+    }
+    .install-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .install-card-icon {
+      font-size: 28px;
+    }
+    .install-card h3 {
+      font-size: 17px; font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .install-card p {
+      font-size: 14px; color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .code-block {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      color: var(--accent);
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+    .code-block .comment { color: var(--text-muted); }
+
+    /* ── HEURISTICS TABLE ── */
+    .heuristics-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .heuristic-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      transition: background .15s;
+    }
+    .heuristic-row:hover { background: var(--bg-elevated); }
+    .heuristic-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .heuristic-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .weight-badge {
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--border-glow);
+      white-space: nowrap;
+    }
+    .confidence-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .confidence-pill.high   { background: rgba(248,113,113,.1); color: var(--red);    border: 1px solid rgba(248,113,113,.2); }
+    .confidence-pill.medium { background: rgba(251,146,60,.1);  color: var(--orange); border: 1px solid rgba(251,146,60,.2); }
+    .confidence-pill.low    { background: rgba(56,189,248,.1);  color: var(--cyan);   border: 1px solid rgba(56,189,248,.2); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 0 32px;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .footer-brand h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .footer-brand p {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      max-width: 280px;
+      line-height: 1.65;
+    }
+    .footer-links h4 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .footer-links ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .footer-links a {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color .15s;
+    }
+    .footer-links a:hover { color: var(--text-primary); }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-bottom a { color: var(--text-muted); text-decoration: none; transition: color .15s; }
+    .footer-bottom a:hover { color: var(--text-secondary); }
+
+    /* ── ANIMATIONS ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero { padding: 110px 0 60px; }
+      .steps::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">🕵️</div>
+      Vibe Code Detector
+    </a>
+    <ul class="nav-links">
+      <li><a href="#detects">What it detects</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a href="https://github.com/paladini/vibe-code-detector" target="_blank" rel="noopener">GitHub</a></li>
+      <li><a href="#install" class="nav-cta">Get Extension</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span>●</span> Open Source · MIT License
+    </div>
+    <h1>
+      Unmask the<br />
+      <span class="accent">AI-Generated</span> <span class="dim">Web</span>
+    </h1>
+    <p class="hero-sub">
+      A forensic browser extension that reveals which AI tools, IDEs, and platforms were used to build any website — instantly, with zero data collection.
+    </p>
+    <div class="hero-actions">
+      <a href="https://github.com/paladini/vibe-code-detector/releases" class="btn btn-primary" target="_blank" rel="noopener">
+        ↓ Download Extension
+      </a>
+      <a href="https://github.com/paladini/vibe-code-detector" class="btn btn-secondary" target="_blank" rel="noopener">
+        ★ View on GitHub
+      </a>
+      <a href="privacy.html" class="btn btn-ghost">
+        Privacy Policy
+      </a>
+    </div>
+    <div class="hero-screenshot fade-up">
+      <img
+        src="../media/Marquee_Tile_(1400x560).png"
+        alt="Vibe Code Detector screenshot showing forensic analysis of an AI-generated website"
+        loading="lazy"
+      />
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div>
+        <div class="stat-value">11+</div>
+        <div class="stat-label">Detection heuristics</div>
+      </div>
+      <div>
+        <div class="stat-value">8+</div>
+        <div class="stat-label">AI platforms detected</div>
+      </div>
+      <div>
+        <div class="stat-value">100%</div>
+        <div class="stat-label">Local — zero data sent</div>
+      </div>
+      <div>
+        <div class="stat-value">MIT</div>
+        <div class="stat-label">Open source license</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETECTS -->
+<section id="detects">
+  <div class="container">
+    <div class="section-label">🔍 Detection Targets</div>
+    <h2>Every AI fingerprint, exposed.</h2>
+    <p class="section-desc">
+      In the age of Vibe Coding, every AI tool leaves a unique trace. Vibe Code Detector reads them all.
+    </p>
+    <div class="targets-grid">
+
+      <div class="target-card green fade-up">
+        <div class="target-icon green">🖥️</div>
+        <div class="target-title">AI IDEs &amp; Agents</div>
+        <div class="target-desc">Internal markers and signature patterns left by code-generation IDEs and autonomous agents.</div>
+        <div class="tag-list">
+          <span class="tag">Cursor</span>
+          <span class="tag">Windsurf</span>
+          <span class="tag">Trae</span>
+          <span class="tag">Replit Agent</span>
+          <span class="tag">Devin</span>
+          <span class="tag">Claude Code</span>
+        </div>
+      </div>
+
+      <div class="target-card cyan fade-up">
+        <div class="target-icon cyan">⚡</div>
+        <div class="target-title">Generation Platforms</div>
+        <div class="target-desc">Deployment-specific signatures and generator meta tags embedded by AI web-building platforms.</div>
+        <div class="tag-list">
+          <span class="tag">v0.dev</span>
+          <span class="tag">Lovable.dev</span>
+          <span class="tag">Bolt.new</span>
+          <span class="tag">Stackblitz</span>
+          <span class="tag">Google AI Studio</span>
+        </div>
+      </div>
+
+      <div class="target-card purple fade-up">
+        <div class="target-icon purple">🎨</div>
+        <div class="target-title">Component DNA</div>
+        <div class="target-desc">Structural fingerprints from the most popular AI-default component libraries and icon sets.</div>
+        <div class="tag-list">
+          <span class="tag">Shadcn/UI</span>
+          <span class="tag">Radix</span>
+          <span class="tag">Lucide Icons</span>
+          <span class="tag">Tailwind</span>
+          <span class="tag">Framer Motion</span>
+        </div>
+      </div>
+
+      <div class="target-card orange fade-up">
+        <div class="target-icon orange">📝</div>
+        <div class="target-title">Prompt Artifacts</div>
+        <div class="target-desc">Leftover placeholder text, generic naming patterns, and embedded metadata that AI tools commonly inject.</div>
+        <div class="tag-list">
+          <span class="tag">Lorem Ipsum</span>
+          <span class="tag">Feature 1/2/3</span>
+          <span class="tag">Bento Grid</span>
+          <span class="tag">AI Comments</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" style="background: var(--bg-surface);">
+  <div class="container">
+    <div class="section-label">⚙️ How It Works</div>
+    <h2>Multi-layer forensic analysis.</h2>
+    <p class="section-desc">
+      Each scan runs a weighted heuristic pipeline across four detection layers.
+    </p>
+
+    <div class="score-demo fade-up">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Utility Density Scan</div>
+            <div class="step-desc">Calculates the ratio of Tailwind utility classes per DOM element. A ratio above 4.5 is a strong indicator of prompt-based styling.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">Component Fingerprinting</div>
+            <div class="step-desc">Identifies <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)">data-radix-*</code> attributes combined with Shadcn CSS variables like <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)">--background</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)">--foreground</code>.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">IDE Signature Matching</div>
+            <div class="step-desc">Scans for internal markers like <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)">__cursor</code>, agent-specific class prefixes, and AI-generated comment blocks.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-title">Final Score &amp; Verdict</div>
+            <div class="step-desc">A weighted sum across all heuristics produces a 0–100 confidence score and a human-readable verdict: <strong>Human</strong>, <strong>Likely AI</strong>, or <strong>Almost Certainly AI</strong>.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="score-card">
+          <h3>EXAMPLE — ANALYSIS RESULT</h3>
+          <div class="score-circle-wrap">
+            <div class="score-circle high">87</div>
+            <div class="score-verdict-text">
+              <h4 style="color:var(--red)">Almost Certainly AI</h4>
+              <p>High confidence of AI-generated code.</p>
+            </div>
+          </div>
+          <div class="factor-bar">
+            <div class="factor-bar-header"><span>AI IDE &amp; Agent Markers</span><span>25/25</span></div>
+            <div class="factor-bar-track"><div class="factor-bar-fill" style="width:100%"></div></div>
+          </div>
+          <div class="factor-bar">
+            <div class="factor-bar-header"><span>Platform Signatures</span><span>20/20</span></div>
+            <div class="factor-bar-track"><div class="factor-bar-fill" style="width:100%"></div></div>
+          </div>
+          <div class="factor-bar">
+            <div class="factor-bar-header"><span>Tailwind &amp; Utility DNA</span><span>15/15</span></div>
+            <div class="factor-bar-track"><div class="factor-bar-fill" style="width:100%"></div></div>
+          </div>
+          <div class="factor-bar">
+            <div class="factor-bar-header"><span>Shadcn/UI &amp; Radix</span><span>15/15</span></div>
+            <div class="factor-bar-track"><div class="factor-bar-fill" style="width:100%"></div></div>
+          </div>
+          <div class="factor-bar">
+            <div class="factor-bar-header"><span>Vibe Coding Stack</span><span>12/15</span></div>
+            <div class="factor-bar-track"><div class="factor-bar-fill" style="width:80%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HEURISTICS -->
+<section>
+  <div class="container">
+    <div class="section-label">📊 Heuristic Weights</div>
+    <h2>Every signal, calibrated.</h2>
+    <p class="section-desc">
+      Each heuristic is assigned a weight based on its discriminative power. High-weight signals are rare in human code.
+    </p>
+    <div class="heuristics-list fade-up">
+      <div class="heuristic-row">
+        <div>
+          <div class="heuristic-name">AI IDE &amp; Agent Markers</div>
+          <div class="heuristic-desc">Signatures from Cursor, Windsurf, Trae, Replit, or Devin</div>
+        </div>
+        <span class="confidence-pill high">High confidence</span>
+        <span class="weight-badge">25 pts</span>
+      </div>
+      <div class="heuristic-row">
+        <div>
+          <div class="heuristic-name">Platform Signatures</div>
+          <div class="heuristic-desc">Markers from Google AI Studio, Lovable, v0, or Bolt.new</div>
+        </div>
+        <span class="confidence-pill high">High confidence</span>
+        <span class="weight-badge">20 pts</span>
+      </div>
+      <div class="heuristic-row">
+        <div>
+          <div class="heuristic-name">Tailwind &amp; Utility DNA</div>
+          <div class="heuristic-desc">Massive utility class patterns typical of v0, Lovable, and Bolt</div>
+        </div>
+        <span class="confidence-pill medium">Medium</span>
+        <span class="weight-badge">15 pts</span>
+      </div>
+      <div class="heuristic-row">
+        <div>
+          <div class="heuristic-name">Shadcn/UI &amp; Radix</div>
+          <div class="heuristic-desc">Radix component structures and standard Shadcn classes</div>
+        </div>
+        <span class="confidence-pill medium">Medium</span>
+        <span class="weight-badge">15 pts</span>
+      </div>
+      <div class="heuristic-row">
+        <div>
+          <div class="heuristic-name">Vibe Coding Stack</div>
+          <div class="heuristic-desc">Combined use of Framer Motion, Lucide, and Tailwind</div>
+        </div>
+        <span class="confidence-pill medium">Medium</span>
+        <span class="weight-badge">15 pts</span>
+      </div>
+      <div class="heuristic-row">
+        <div>
+          <div class="heuristic-name">AI Iconography (Lucide)</div>
+          <div class="heuristic-desc">Heavy use of Lucide Icons, the AI industry standard</div>
+        </div>
+        <span class="confidence-pill low">Supplemental</span>
+        <span class="weight-badge">10 pts</span>
+      </div>
+      <div class="heuristic-row">
+        <div>
+          <div class="heuristic-name">Prompt Artifact Comments</div>
+          <div class="heuristic-desc">Comments referencing prompts or "Generated by ..." metadata</div>
+        </div>
+        <span class="confidence-pill low">Supplemental</span>
+        <span class="weight-badge">7 pts</span>
+      </div>
+      <div class="heuristic-row">
+        <div>
+          <div class="heuristic-name">Model/Provider Metadata</div>
+          <div class="heuristic-desc">References to OpenAI, Anthropic, Google, or AI-inserted license headers</div>
+        </div>
+        <span class="confidence-pill low">Supplemental</span>
+        <span class="weight-badge">7 pts</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<section id="install" style="background: var(--bg-surface);">
+  <div class="container">
+    <div class="section-label">🚀 Install</div>
+    <h2>Get started in seconds.</h2>
+    <p class="section-desc">
+      Available as an unpacked extension — install directly from the latest GitHub release.
+    </p>
+    <div class="install-grid fade-up">
+      <div class="install-card">
+        <div class="install-card-icon">📦</div>
+        <div>
+          <h3>Install from Release</h3>
+          <p>Download the latest <code style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--accent)">.zip</code>, unzip, and load as an unpacked extension in Chrome Developer Mode.</p>
+        </div>
+        <a href="https://github.com/paladini/vibe-code-detector/releases" class="btn btn-primary" target="_blank" rel="noopener" style="align-self:flex-start">
+          ↓ Download Latest Release
+        </a>
+      </div>
+      <div class="install-card">
+        <div class="install-card-icon">🛠️</div>
+        <div>
+          <h3>Build from Source</h3>
+          <p>Clone the repository, install dependencies, and build the extension locally.</p>
+        </div>
+        <div class="code-block">
+          <span class="comment"># Clone &amp; build</span><br/>
+          git clone https://github.com/<br/>
+          &nbsp;&nbsp;paladini/vibe-code-detector<br/>
+          cd vibe-code-detector<br/>
+          npm install<br/>
+          npm run build
+        </div>
+        <a href="https://github.com/paladini/vibe-code-detector" class="btn btn-secondary" target="_blank" rel="noopener" style="align-self:flex-start">
+          View on GitHub →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <h3>🕵️ Vibe Code Detector</h3>
+        <p>A forensic browser extension for the modern web. Open source, privacy-first, and built for transparency.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Project</h4>
+        <ul>
+          <li><a href="https://github.com/paladini/vibe-code-detector" target="_blank" rel="noopener">GitHub Repository</a></li>
+          <li><a href="https://github.com/paladini/vibe-code-detector/releases" target="_blank" rel="noopener">Releases</a></li>
+          <li><a href="https://github.com/paladini/vibe-code-detector/issues" target="_blank" rel="noopener">Report an Issue</a></li>
+          <li><a href="https://github.com/paladini/vibe-code-detector/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="https://github.com/paladini/vibe-code-detector/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a></li>
+          <li><a href="https://github.com/paladini/vibe-code-detector/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 <a href="https://github.com/paladini" target="_blank" rel="noopener">Fernando Paladini</a> · MIT License</span>
+      <span>Built with ❤️ for web transparency</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Intersection Observer for fade-up animations
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+  );
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
