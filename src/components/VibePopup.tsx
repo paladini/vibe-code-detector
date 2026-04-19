@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
+import type { ReactElement } from 'react';
 import {
   ShieldAlert,
   ShieldCheck,
@@ -137,7 +138,7 @@ export default function VibePopup() {
 
   const factorIcon = (name: string) => {
     const cls = 'w-3 h-3 text-indigo-400 shrink-0';
-    const map: Record<string, JSX.Element> = {
+    const map: Record<string, ReactElement> = {
       'Tailwind & Utility DNA':    <Zap className={cls} />,
       'Shadcn/UI & Radix':         <Layout className={cls} />,
       'AI Iconography (Lucide)':   <Sparkles className={cls} />,
