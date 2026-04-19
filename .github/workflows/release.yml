@@ -81,6 +81,13 @@ jobs:
           tag_name: ${{ steps.meta.outputs.tag }}
           name: Vibe Code Detector ${{ steps.meta.outputs.version }}
           generate_release_notes: true
+          body: |
+            ## Install
+            - Chrome Web Store (recommended): https://chromewebstore.google.com/detail/vibe-code-detector/pfnebgaajbopnhipbigfldmdjpaemgcg
+
+            ## Release Assets
+            - Packaged extension zip
+            - SHA256 checksum
           files: |
             release/${{ steps.meta.outputs.archive }}
             release/${{ steps.meta.outputs.checksum_file }}
