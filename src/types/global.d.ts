@@ -12,10 +12,14 @@ interface ChromeRuntime {
 }
 
 interface ChromeTabs {
-  query(queryInfo: { active: boolean; currentWindow: boolean }): Promise<ChromeTab[]>;
+  query(queryInfo: {
+    active?: boolean;
+    currentWindow?: boolean;
+    [key: string]: unknown;
+  }): Promise<ChromeTab[]>;
   sendMessage(
     tabId: number,
-    message: { action: 'analyze' },
+    message: unknown,
     callback: (response: unknown) => void
   ): void;
 }
@@ -23,7 +27,11 @@ interface ChromeTabs {
 interface ChromeScripting {
   executeScript(options: {
     target: { tabId: number };
-    files: string[];
+    files?: string[];
+    func?: (...args: unknown[]) => unknown;
+    args?: unknown[];
+    world?: 'ISOLATED' | 'MAIN';
+    injectImmediately?: boolean;
   }): Promise<unknown>;
 }
 
