@@ -15,7 +15,7 @@ Vibe Code Detector is a free, open-source browser extension that reveals which A
 - 100% open source (MIT License)
 
 ## Installation
-- [Chrome Web Store](https://chrome.google.com/webstore/detail/vibe-code-detector/)
+- [Chrome Web Store](https://chromewebstore.google.com/detail/vibe-code-detector/pfnebgaajbopnhipbigfldmdjpaemgcg)
 - [GitHub Releases](https://github.com/paladini/vibe-code-detector/releases)
 
 ## Support

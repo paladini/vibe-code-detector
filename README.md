@@ -6,6 +6,7 @@
 
 <p align="center">
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="https://chromewebstore.google.com/detail/vibe-code-detector/pfnebgaajbopnhipbigfldmdjpaemgcg"><img src="https://img.shields.io/badge/Chrome%20Web%20Store-Install-4285F4?logo=googlechrome&logoColor=white" alt="Chrome Web Store"></a>
   <a href="https://github.com/paladini/vibe-code-detector/releases"><img src="https://img.shields.io/github/v/release/paladini/vibe-code-detector?color=blue" alt="Latest Release"></a>
   <a href="https://developer.chrome.com/docs/extensions/mv3/intro/"><img src="https://img.shields.io/badge/Chrome-Manifest%20V3-4285F4?logo=googlechrome&logoColor=white" alt="Manifest V3"></a>
   <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
@@ -32,6 +33,10 @@ Markers from **v0.dev**, **Lovable.dev**, **Bolt.new**, **Stackblitz**, and **Go
 ## Installation
 
 ### For users (recommended)
+
+1. Install directly from the [Chrome Web Store](https://chromewebstore.google.com/detail/vibe-code-detector/pfnebgaajbopnhipbigfldmdjpaemgcg).
+
+### Alternative (manual install from GitHub release)
 
 1. Download the latest `.zip` from the [Releases](https://github.com/paladini/vibe-code-detector/releases) page.
 2. Unzip the file.
@@ -78,7 +83,14 @@ npm run build    # Build the Chrome extension into extension/
 npm run lint     # Run ESLint
 ```
 
-CI runs on every push via GitHub Actions. Releases are created automatically when a version tag (`v*.*.*`) is pushed:
+CI runs on every push via GitHub Actions. Releases can be published either by:
+
+- pushing a version tag (`v*.*.*`), or
+- manually triggering the **Release Extension** workflow with a version input.
+
+Published GitHub releases include the packaged extension zip and checksum, while the recommended user install path remains the Chrome Web Store listing:
+
+- Chrome Web Store: https://chromewebstore.google.com/detail/vibe-code-detector/pfnebgaajbopnhipbigfldmdjpaemgcg
 
 ```bash
 git tag v1.0.1
