@@ -83,10 +83,11 @@ npm run build    # Build the Chrome extension into extension/
 npm run lint     # Run ESLint
 ```
 
-CI runs on every push via GitHub Actions. Releases can be published either by:
+CI runs on every push via GitHub Actions. Releases can be published by:
 
+- bumping `extension/manifest.json` and `package.json` versions on `main` (the workflow automatically creates/updates the matching `vX.Y.Z` GitHub release),
 - pushing a version tag (`v*.*.*`), or
-- manually triggering the **Release Extension** workflow with a version input.
+- manually triggering the **Release Extension** workflow with an optional version input.
 
 Published GitHub releases include the packaged extension zip and checksum, while the recommended user install path remains the Chrome Web Store listing:
 
