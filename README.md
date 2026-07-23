@@ -1,5 +1,5 @@
 <p align="center">
-<img alt="Harness Score L1" src="https://paladini.github.io/harness-score/maturity/badge-l1.svg" height="20">
+<a href="https://paladini.github.io/harness-score/guide/maturity-model#l1-documented" title="Harness Score — AI coding harness maturity"><img alt="Harness Score L1 (Documented): measures AI-assisted development harness maturity with harness-score" src="https://paladini.github.io/harness-score/maturity/badge-l1.svg" height="20"></a>
   <img src="media/Marquee_Tile_(1400x560).png" alt="Vibe Code Detector" width="100%">
 </p>
 
