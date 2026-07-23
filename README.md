@@ -1,4 +1,6 @@
-<p align="center">
+﻿<p align="center">
+
+<img alt="Harness Score L1" src="https://paladini.github.io/harness-score/maturity/badge-l1.svg" height="20">
   <img src="media/Marquee_Tile_(1400x560).png" alt="Vibe Code Detector" width="100%">
 </p>
 
@@ -14,7 +16,7 @@
 
 ---
 
-**Vibe Code Detector** is an open-source browser extension that performs forensic analysis on any webpage to detect the AI tools, IDEs, and platforms used to build it. In the age of "Vibe Coding", every AI tool leaves a unique signature — this extension reads it.
+**Vibe Code Detector** is an open-source browser extension that performs forensic analysis on any webpage to detect the AI tools, IDEs, and platforms used to build it. In the age of "Vibe Coding", every AI tool leaves a unique signature â€” this extension reads it.
 
 ## What it detects
 
@@ -25,10 +27,10 @@ Signatures from **Cursor**, **Windsurf**, **Trae**, **Replit Agent**, **Devin**,
 Markers from **v0.dev**, **Lovable.dev**, **Bolt.new**, **Stackblitz**, and **Google AI Studio**.
 
 ### Structural Heuristics
-- **Tailwind Density** — high utility class ratio per element is a strong prompt-based styling indicator
-- **Shadcn/Radix DNA** — `data-radix-*` attributes combined with standard Shadcn CSS variables
-- **Lucide Iconography** — the default icon library for almost every AI code generator
-- **Placeholder Patterns** — generic texts and layouts left behind by AI prompts
+- **Tailwind Density** â€” high utility class ratio per element is a strong prompt-based styling indicator
+- **Shadcn/Radix DNA** â€” `data-radix-*` attributes combined with standard Shadcn CSS variables
+- **Lucide Iconography** â€” the default icon library for almost every AI code generator
+- **Placeholder Patterns** â€” generic texts and layouts left behind by AI prompts
 
 ## Installation
 
@@ -58,10 +60,10 @@ Then load the `extension/` folder in Chrome as described above.
 
 The detector runs a multi-layer heuristic scan on the active tab:
 
-1. **Utility Density** — calculates the ratio of Tailwind classes per DOM element
-2. **Component Fingerprinting** — identifies specific Radix/Shadcn attribute patterns
-3. **IDE Signatures** — scans for internal markers like `__cursor` or AI-generated comment blocks
-4. **Platform Metadata** — checks for generator tags and deployment-specific signatures
+1. **Utility Density** â€” calculates the ratio of Tailwind classes per DOM element
+2. **Component Fingerprinting** â€” identifies specific Radix/Shadcn attribute patterns
+3. **IDE Signatures** â€” scans for internal markers like `__cursor` or AI-generated comment blocks
+4. **Platform Metadata** â€” checks for generator tags and deployment-specific signatures
 
 The final score is a weighted sum across all heuristics, producing a confidence verdict: **Human**, **Likely AI**, or **Almost Certainly AI**.
 
@@ -71,7 +73,7 @@ The final score is a weighted sum across all heuristics, producing a confidence 
 |------|---------|
 | `src/lib/vibe-detector.ts` | Single source of truth for all heuristics and scoring logic |
 | `extension/content.js` | Plain-JS mirror of the detection logic (no ES module imports) |
-| `src/components/VibePopup.tsx` | Extension popup UI — contains no inline heuristic logic |
+| `src/components/VibePopup.tsx` | Extension popup UI â€” contains no inline heuristic logic |
 
 > `extension/content.js` must always be kept in sync with `src/lib/vibe-detector.ts`.
 
@@ -102,9 +104,9 @@ git push origin v1.0.1
 
 New AI tools appear every week. Contributions to keep heuristics current are very welcome:
 
-- **New heuristics** — found a new tool's signature? Open a PR with examples.
-- **Scoring refinements** — help balance weights for better accuracy.
-- **UI improvements** — enhance the forensic aesthetic.
+- **New heuristics** â€” found a new tool's signature? Open a PR with examples.
+- **Scoring refinements** â€” help balance weights for better accuracy.
+- **UI improvements** â€” enhance the forensic aesthetic.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for full guidelines.
 
@@ -115,5 +117,5 @@ Distributed under the [MIT License](./LICENSE).
 ---
 
 <p align="center">
-  Built by <a href="https://github.com/paladini">Fernando Paladini</a> · For a more transparent web.
+  Built by <a href="https://github.com/paladini">Fernando Paladini</a> Â· For a more transparent web.
 </p>
